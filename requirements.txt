@@ -1,2 +1,3 @@
 Flask
 git+git://github.com/luciengaitskell/python-instagram.git
+gunicorn
