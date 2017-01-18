@@ -30,7 +30,12 @@ def login_callback():
     print("Code: " + code)
     user = client.loop.run_until_complete(client.add_user(
             code=code))
-    return str(client.loop.run_until_complete(user.get_self()))
+
+    self_data = client.loop.run_until_complete(user.get_self())
+    profile_picture_url = self_data['data']['profile_picture']
+    username = self_data['data']['username']
+    return ('<img src="' + profile_picture_url
+            + '" alt="' + username + '">')
 
 
 if __name__ == "__main__":
