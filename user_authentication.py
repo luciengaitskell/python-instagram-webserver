@@ -28,8 +28,7 @@ def hello():
 def login_callback():
     code = str(request.args['code'])
     print("Code: " + code)
-    user = client.loop.run_until_complete(client.get_user(
-            code=code))
+    user = client.loop.run_until_complete(client.get_user(code=code))
 
     self_data = client.loop.run_until_complete(user.get_self())
     profile_picture_url = self_data['profile_picture']
