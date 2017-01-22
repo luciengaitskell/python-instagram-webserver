@@ -32,8 +32,8 @@ def login_callback():
             code=code))
 
     self_data = client.loop.run_until_complete(user.get_self())
-    profile_picture_url = self_data['data']['profile_picture']
-    username = self_data['data']['username']
+    profile_picture_url = self_data['profile_picture']
+    username = self_data['username']
     return ('<img src="' + profile_picture_url
             + '" alt="' + username + '">')
 
