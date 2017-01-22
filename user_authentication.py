@@ -28,7 +28,13 @@ def hello():
 def login_callback():
     code = str(request.args['code'])
     print("Code: " + code)
-    user = client.loop.run_until_complete(client.get_user(code=code))
+    try:
+        user = client.loop.run_until_complete(client.get_user(code=code))
+    except instagram.HTTPException as e:
+        if e.code == 400:  # If login error:
+            return "Login Error: Invalid code."
+        else:  # Raise if other error:
+            raise e
 
     self_data = client.loop.run_until_complete(user.get_self())
     profile_picture_url = self_data['profile_picture']
