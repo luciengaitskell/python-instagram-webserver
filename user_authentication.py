@@ -39,10 +39,10 @@ def login_callback():
             raise e
 
     session['user'] = user.client.token
-    return redirect('/user/profile_picture', code=307)
+    return redirect('/user/profile_picture/', code=307)
 
 
-@app.route("/user/profile_picture")
+@app.route("/user/profile_picture/")
 def display_profile_picture():
     user = client.loop.run_until_complete(
             client.get_user(token=session['user']))
