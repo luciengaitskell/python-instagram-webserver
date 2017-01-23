@@ -44,7 +44,10 @@ def login_callback():
 
 @app.route("/user/")
 def user_links():
-    return """<a href=\"/user/profile_picture\">Profile Picture</a>"""
+    return """<a href=\"/user/profile_picture\">Profile Picture</a>
+    </br>
+    <a href=\"/user/recent_media\">Recent Media</a>
+    """
 
 
 @app.route("/user/profile_picture/")
@@ -56,6 +59,21 @@ def display_profile_picture():
     username = self_data['username']
     return ('<img src="' + profile_picture_url
             + '" alt="' + username + '">')
+
+
+@app.route("/user/recent_media/")
+def display_recent_media():
+    user = client.loop.run_until_complete(
+            client.get_user(token=session['user']))
+    self_media = client.loop.run_until_complete(user.get_self_recent_media())
+
+    return_html = ""
+    for mda in self_media:
+        return_html += ("<img src=\""
+                        + mda['images']['standard_resolution']['url']
+                        + "\"></img></br>")
+
+    return str(return_html)
 
 
 if __name__ == "__main__":
