@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, session
 import instagram
 
 client_id = os.environ['INSTAGRAM_CLIENT_ID']
@@ -14,6 +14,8 @@ authentication_url = ('https://api.instagram.com/oauth/authorize/?client_id='
                       + '&response_type=code&scope=' + scope_string)
 
 app = Flask(__name__)
+app.secret_key = os.environ['INSTAGRAM_WEBSERVER_SECRET_KEY']
+
 client = instagram.Client(client_id=client_id, client_secret=client_secret,
                           redirect_uri=redirect_uri)
 
@@ -36,6 +38,14 @@ def login_callback():
         else:  # Raise if other error:
             raise e
 
+    session['user'] = user.client.token
+    return redirect('/user/profile_picture', code=307)
+
+
+@app.route("/user/profile_picture")
+def display_profile_picture():
+    user = client.loop.run_until_complete(
+            client.get_user(token=session['user']))
     self_data = client.loop.run_until_complete(user.get_self())
     profile_picture_url = self_data['profile_picture']
     username = self_data['username']
