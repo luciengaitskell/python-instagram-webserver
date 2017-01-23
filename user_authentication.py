@@ -39,7 +39,12 @@ def login_callback():
             raise e
 
     session['user'] = user.client.token
-    return redirect('/user/profile_picture/', code=307)
+    return redirect('/user/', code=307)
+
+
+@app.route("/user/")
+def user_links():
+    return """<a href=\"/user/profile_picture\">Profile Picture</a>"""
 
 
 @app.route("/user/profile_picture/")
