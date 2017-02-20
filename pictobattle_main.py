@@ -4,6 +4,7 @@ import instagram
 import threading
 import time
 from datetime import datetime, timedelta
+import atexit
 
 
 client_id = os.environ['INSTAGRAM_CLIENT_ID']
@@ -251,11 +252,18 @@ def display_media_id(media_id):
     return str(return_html)
 
 
+def run_closing_actions():
+    global workers_running
+    client.loop.run_until_complete(client.close())
+    workers_running = False
+
+atexit.register(run_closing_actions)
+
+battle_thread = threading.Thread(target=battle_worker)
+battle_thread.start()
+
 if __name__ == "__main__":
     try:
-        battle_thread = threading.Thread(target=battle_worker)
-        battle_thread.start()
         app.run()
     finally:
-        client.loop.run_until_complete(client.close())
-        workers_running = False
+        run_closing_actions()
