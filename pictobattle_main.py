@@ -49,7 +49,6 @@ def battle_worker():
 
             # Battle Archive:
             if current_time - btl['start_time'] > battle_length:
-                print("ARCHIVED!")
                 if btl['original_photo']['likes'] > btl['second_photo']['likes']:
                     update_user_outcome_count(btl['original_user']._id, 1, 0, 0)
                     update_user_outcome_count(btl['second_user_info']['id'], 0, 1, 0)
@@ -60,13 +59,11 @@ def battle_worker():
                     update_user_outcome_count(btl['original_user']._id, 0, 0, 1)
                     update_user_outcome_count(btl['second_user_info']['id'], 0, 0, 1)
 
-                print(battle_outcomes)
                 old_battles.append(btl)
                 del current_battles[index]
 
             # like_update:
             elif current_time -btl['last_update_time'] > battle_update_wait:
-                print("Update likes")
                 btl['original_photo']['likes'] = client.loop.run_until_complete(user.get_likes(btl['original_photo']['id']))
 
                 btl['second_photo']['likes'] = client.loop.run_until_complete(user.get_likes(btl['second_photo']['id']))
@@ -84,7 +81,6 @@ def hello():
 @app.route("/login/callback/")
 def login_callback():
     code = str(request.args['code'])
-    print("Code: " + code)
     try:
         user = client.loop.run_until_complete(client.get_user(code=code))
     except instagram.HTTPException as e:
@@ -166,9 +162,7 @@ def show_users_for_pictobattle(media_id):
     user = client.loop.run_until_complete(client.get_user(token=session['user']))
 
     followers = client.loop.run_until_complete(user.get_self_followed_by())
-    print(followers)
     follows = client.loop.run_until_complete(user.get_self_follows())
-    print(follows)
 
     both_users = [i for i in followers for j in follows if i['id']==j['id']]
 
@@ -185,7 +179,6 @@ def select_user_media_for_pictobattle(media_id, user_id):
     user = client.loop.run_until_complete(client.get_user(token=session['user']))
 
     other_user_media = client.loop.run_until_complete(user.get_user_recent_media(user_id))
-    print(other_user_media)
 
     return_html = "<h1>Select one of their photos!</h1>"
     for mda in other_user_media:
@@ -201,7 +194,6 @@ def final_pictobattle_confirm(media_id, user_id, user_media_id):
 
     original_mda = client.loop.run_until_complete(user.get_media(media_id=media_id))
     other_user_mda = client.loop.run_until_complete(user.get_media(media_id=user_media_id))
-    print(other_user_mda)
 
     return_html = ""
     if request.method == 'GET':
@@ -231,7 +223,6 @@ def final_pictobattle_confirm(media_id, user_id, user_media_id):
         new_battle['last_update_time'] = current_time
         new_battle['start_time'] = current_time
         current_battles.append(new_battle)
-        print("Started!")
         return redirect(url_for('user_main'))
 
     return str(return_html)
