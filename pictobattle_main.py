@@ -118,15 +118,21 @@ def user_main():
         second_user_info = btl['second_user_info']
 
         if user._id == first_user._id or user._id == second_user_info['id']:
-            return_html += "<hr>"
-            return_html += "<img src=\"" + str(btl['original_photo']['url']) + "\"></img>"
-            return_html += "<img src=\"" + str(btl['second_photo']['url']) + "\"></img></br>"
-            return_html += (str(len(btl['original_photo']['likes'])) + " likes vs "
+            new_return_html = ""
+            new_return_html += "<hr>"
+            new_return_html += "<img src=\"" + str(btl['original_photo']['url']) + "\"></img>"
+            new_return_html += "<img src=\"" + str(btl['second_photo']['url']) + "\"></img></br>"
+            new_return_html += (str(len(btl['original_photo']['likes'])) + " likes vs "
                             + str(len(btl['second_photo']['likes'])) + " likes")
 
-            time_left = datetime(1, 1, 1) + timedelta(seconds=int(battle_length -(time.time() - btl['start_time'])))
-            return_html += ("</br> {} days, {} hours, {} minutes, and {} seconds left</br>"
-                            .format(time_left.day-1, time_left.hour, time_left.minute, time_left.second))
+            try:
+                time_left = datetime(1, 1, 1) + timedelta(seconds=int(battle_length -(time.time() - btl['start_time'])))
+                new_return_html += ("</br> {} days, {} hours, {} minutes, and {} seconds left</br>"
+                                .format(time_left.day-1, time_left.hour, time_left.minute, time_left.second))
+            except OverflowError:
+                continue
+
+            return_html += new_return_html
 
     return return_html
 
