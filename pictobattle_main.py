@@ -30,6 +30,8 @@ current_battles = []
 old_battles = []
 battle_outcomes = {}
 
+print("SETUP!")
+
 workers_running = True
 
 
